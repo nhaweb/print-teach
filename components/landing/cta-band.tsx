@@ -9,7 +9,7 @@ export function CtaBand() {
             Nhận mẫu thử miễn phí cho đơn hàng đầu tiên
           </h2>
           <p className="mt-3 leading-relaxed text-navy-soft">
-            Gửi file thiết kế hoặc mô tả sản phẩm — kỹ sư PML phản hồi phương án kết cấu & báo giá trong 15 phút.
+            Gửi file thiết kế hoặc mô tả sản phẩm — kỹ sư PML phản hồi phương án kết cấu & báo giá. Chúng tôi sẽ liên hệ lại sớm nhất.
           </p>
         </div>
         <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">

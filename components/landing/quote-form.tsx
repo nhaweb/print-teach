@@ -4,7 +4,7 @@ import { useActionState, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Calculator, CheckCircle2, ChevronDown, Loader2, ShieldCheck } from 'lucide-react'
 import { submitQuoteRequest, type QuoteState } from '@/app/actions'
-import { MATERIALS, PACKAGING_TYPES, QUANTITY_TIERS, estimateUnitPrice, formatVnd } from '@/lib/quote'
+import { MATERIALS, PACKAGING_TYPES, QUANTITY_TIERS, SAMPLE_HOTLINE, estimateUnitPrice, formatVnd } from '@/lib/quote'
 
 const fieldClass =
   'h-11 w-full appearance-none rounded-md border border-input bg-white px-3 pr-9 text-sm text-foreground shadow-xs transition-colors hover:border-slate-400 focus-visible:border-cta focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-cta/25 aria-invalid:border-destructive aria-invalid:ring-destructive/15'
@@ -50,25 +50,21 @@ export function QuoteForm() {
   const [type, setType] = useState<string>(PACKAGING_TYPES[0].value)
   const [quantity, setQuantity] = useState<string>(QUANTITY_TIERS[1].value)
   const [material, setMaterial] = useState<string>(MATERIALS[0].value)
-  const [state, formAction, pending] = useActionState<QuoteState, FormData>(submitQuoteRequest, {
-    status: 'idle',
-  })
+  const [state, formAction, pending] = useActionState<QuoteState, FormData>(submitQuoteRequest, null)
 
   const [phone, setPhone] = useState('')
-  const [utm, setUtm] = useState({ utm_source: '', utm_medium: '', utm_campaign: '' })
   const phoneRef = useRef<HTMLInputElement>(null)
 
   const estimate = estimateUnitPrice(type, quantity, material)
-  const phoneError = state.status === 'error' && state.field === 'phone'
-
-  useEffect(() => {
-    const q = new URLSearchParams(window.location.search)
-    setUtm({
-      utm_source: q.get('utm_source') ?? '',
-      utm_medium: q.get('utm_medium') ?? '',
-      utm_campaign: q.get('utm_campaign') ?? '',
-    })
-  }, [])
+  const fieldErrors = state && !state.ok ? state.fieldErrors : undefined
+  const phoneErrorMsg = fieldErrors?.phone
+  const phoneError = Boolean(phoneErrorMsg)
+  const formErrorMsg =
+    state && !state.ok
+      ? state.error === 'SERVER_ERROR'
+        ? `Hệ thống đang bận, vui lòng gọi hotline ${SAMPLE_HOTLINE}.`
+        : Object.entries(fieldErrors ?? {}).find(([k]) => k !== 'phone')?.[1]
+      : undefined
 
   useEffect(() => {
     if (phoneError) phoneRef.current?.focus()
@@ -79,7 +75,7 @@ export function QuoteForm() {
       <div className="absolute inset-x-6 -top-px h-px bg-gradient-to-r from-transparent via-cta to-transparent md:inset-x-8" aria-hidden="true" />
 
       <AnimatePresence mode="wait" initial={false}>
-        {state.status === 'success' ? (
+        {state?.ok ? (
           <motion.div
             key="success"
             initial={{ opacity: 0, y: 8 }}
@@ -93,16 +89,11 @@ export function QuoteForm() {
             </span>
             <h2 className="mt-5 text-xl font-bold text-foreground">Đã nhận yêu cầu báo giá</h2>
             <p className="mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              Chuyên viên PML sẽ liên hệ qua Zalo/điện thoại trong vòng <strong className="text-foreground">15 phút</strong> (giờ hành chính).
+              Chúng tôi sẽ liên hệ lại sớm nhất qua Zalo/điện thoại.
             </p>
             <p className="mt-4 rounded-md bg-muted px-3 py-1.5 font-mono text-sm text-foreground">
-              Mã yêu cầu: {state.reference}
+              Mã yêu cầu: {state.ref}
             </p>
-            {state.demo && (
-              <p className="mt-3 max-w-xs text-xs text-amber-700">
-                Chế độ demo: hệ thống chưa kết nối cơ sở dữ liệu nên yêu cầu chưa được lưu.
-              </p>
-            )}
           </motion.div>
         ) : (
           <motion.form key="form" action={formAction} exit={{ opacity: 0, y: -8 }} noValidate aria-busy={pending}>
@@ -110,12 +101,9 @@ export function QuoteForm() {
               <label htmlFor="website">Website</label>
               <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
             </div>
-            {Object.entries(utm).map(([k, v]) => (
-              <input key={k} type="hidden" name={k} value={v} />
-            ))}
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-foreground">Báo giá nhanh trong 15 phút</h2>
+                <h2 className="text-xl font-bold text-foreground">Nhận báo giá nhanh</h2>
                 <p className="mt-1 text-sm text-muted-foreground">Dự toán đơn giá tham khảo tức thì.</p>
               </div>
               <span className="grid size-10 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground">
@@ -151,7 +139,7 @@ export function QuoteForm() {
                 />
                 {phoneError && (
                   <p id="phone-error" role="alert" className="mt-1.5 text-xs font-medium text-destructive">
-                    {state.message}
+                    {phoneErrorMsg}
                   </p>
                 )}
               </div>
@@ -167,9 +155,9 @@ export function QuoteForm() {
               </span>
             </div>
 
-            {state.status === 'error' && state.field === 'form' && (
+            {formErrorMsg && (
               <p className="mt-3 text-sm font-medium text-destructive" role="alert">
-                {state.message}
+                {formErrorMsg}
               </p>
             )}
 
@@ -193,6 +181,9 @@ export function QuoteForm() {
             <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
               <ShieldCheck className="size-3.5" aria-hidden="true" />
               Thông tin được bảo mật. Miễn phí tư vấn & làm mẫu.
+            </p>
+            <p className="mt-2 text-center text-[11px] leading-relaxed text-muted-foreground">
+              Số điện thoại/Zalo của bạn chỉ được PML dùng để liên hệ tư vấn và báo giá, không chia sẻ cho bên thứ ba.
             </p>
           </motion.form>
         )}

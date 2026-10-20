@@ -4,7 +4,7 @@ let client: SupabaseClient | null = null
 
 /**
  * Supabase client dùng service role key. CHỈ gọi từ code server (Server Action).
- * Trả null khi thiếu env (demo mode).
+ * Trả null khi thiếu env (action sẽ trả SERVER_ERROR).
  */
 export function getSupabaseAdmin(): SupabaseClient | null {
   if (typeof window !== 'undefined') throw new Error('getSupabaseAdmin must only run on the server')

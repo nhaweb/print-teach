@@ -22,6 +22,8 @@ export const metadata: Metadata = {
     'xưởng in offset',
     'PML Vietnam',
   ],
+  // Còn dữ liệu mẫu → không cho index (GAP-23/24).
+  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
   openGraph: {
     title: 'PML PrintTech — Giải pháp in ấn & bao bì công nghiệp',
     description: 'Xưởng in offset 6 màu, chuẩn ISO 9001:2015, giao hàng đúng hạn 100%.',

@@ -19,15 +19,23 @@ export const MATERIALS = [
   { value: 'pet-pe', label: 'Màng PET/PE, OPP/CPP', factor: 1.05 },
 ] as const
 
-export function estimateUnitPrice(type: string, quantity: string, material: string) {
+/** Hệ số dạng số nguyên (×100) để tránh sai số dấu phẩy động. */
+const pct = (f: number) => Math.round(f * 100)
+
+export type PriceEstimate = { min: number; max: number }
+
+/** Công thức chuẩn (GAP-09): mid = base × factor(số lượng) × factor(chất liệu); min = mid×0,9; max = mid×1,15. */
+export function estimateUnitPrice(type: unknown, quantity: unknown, material: unknown): PriceEstimate | null {
   const t = PACKAGING_TYPES.find((x) => x.value === type)
   const q = QUANTITY_TIERS.find((x) => x.value === quantity)
   const m = MATERIALS.find((x) => x.value === material)
   if (!t || !q || !m) return null
-  const mid = t.base * q.factor * m.factor
+  // mid×k tính bằng số nguyên với đơn vị 1e-6 VND; làm tròn half-up đến 10 VND (= 1e7 đơn vị).
+  const scaled = t.base * pct(q.factor) * pct(m.factor)
+  const round10 = (k: number) => Math.floor((scaled * k + 5_000_000) / 10_000_000) * 10
   return {
-    min: Math.round((mid * 0.9) / 10) * 10,
-    max: Math.round((mid * 1.15) / 10) * 10,
+    min: round10(90),
+    max: round10(115),
   }
 }
 
@@ -39,13 +47,3 @@ export type Material = (typeof MATERIALS)[number]['value']
 
 /** Hotline mẫu (dữ liệu mẫu theo quyết định chốt). */
 export const SAMPLE_HOTLINE = '0901 234 567'
-
-export const PHONE_PATTERN = /^0(?:3|5|7|8|9)\d{8}$/
-
-/** Chuẩn hóa SĐT VN về dạng 0xxxxxxxxx; trả null nếu không hợp lệ. */
-export function normalizePhone(raw: string): string | null {
-  let p = raw.replace(/[\s.\-()]/g, '')
-  if (p.startsWith('+84')) p = '0' + p.slice(3)
-  else if (p.startsWith('84') && p.length === 11) p = '0' + p.slice(2)
-  return PHONE_PATTERN.test(p) ? p : null
-}
