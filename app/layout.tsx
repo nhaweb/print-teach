@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Plus_Jakarta_Sans } from 'next/font/google'
+import { SITE_URL } from '@/lib/site'
 import './globals.css'
 
 const jakarta = Plus_Jakarta_Sans({
@@ -10,6 +11,8 @@ const jakarta = Plus_Jakarta_Sans({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: '/' },
   title: 'PML PrintTech — Sản xuất bao bì & In ấn công nghiệp khép kín',
   description:
     'PML Vietnam: in hộp giấy carton, túi giấy, tem nhãn decal cuộn, bao bì màng phức hợp. Xưởng 5.000m², chuẩn ISO 9001:2015, 10 triệu+ sản phẩm/tháng, giá tận xưởng.',
@@ -27,8 +30,16 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'PML PrintTech — Giải pháp in ấn & bao bì công nghiệp',
     description: 'Xưởng in offset 6 màu, chuẩn ISO 9001:2015, giao hàng đúng hạn 100%.',
+    url: '/',
+    siteName: 'PML PrintTech',
     locale: 'vi_VN',
     type: 'website',
+    // og:image do app/opengraph-image.tsx sinh ra (1200×630), Next tự chèn thẻ meta.
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PML PrintTech — Giải pháp in ấn & bao bì công nghiệp',
+    description: 'Xưởng in offset 6 màu, chuẩn ISO 9001:2015, giao hàng đúng hạn 100%.',
   },
   icons: {
     icon: [
