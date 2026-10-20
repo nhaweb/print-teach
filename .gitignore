@@ -1,0 +1,11 @@
+# Environment variables
+.env*
+!.env.example
+
+# Build / deps
+node_modules
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+.DS_Store
