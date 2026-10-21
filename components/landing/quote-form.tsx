@@ -4,6 +4,8 @@ import { useActionState, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Calculator, CheckCircle2, ChevronDown, Loader2, ShieldCheck } from 'lucide-react'
 import { submitQuoteRequest, type QuoteState } from '@/app/actions'
+import { getProduct } from '@/content/products'
+import { normalizeVnPhone } from '@/lib/phone'
 import { MATERIALS, PACKAGING_TYPES, QUANTITY_TIERS, SAMPLE_HOTLINE, estimateUnitPrice, formatVnd } from '@/lib/quote'
 
 const fieldClass =
@@ -57,14 +59,26 @@ export function QuoteForm() {
 
   const estimate = estimateUnitPrice(type, quantity, material)
   const fieldErrors = state && !state.ok ? state.fieldErrors : undefined
-  const phoneErrorMsg = fieldErrors?.phone
+  // Validate phía client trước khi gửi (server vẫn validate lại).
+  const [clientPhoneError, setClientPhoneError] = useState<string | null>(null)
+  const phoneErrorMsg = clientPhoneError ?? fieldErrors?.phone
   const phoneError = Boolean(phoneErrorMsg)
   const formErrorMsg =
     state && !state.ok
       ? state.error === 'SERVER_ERROR'
-        ? `Hệ thống đang bận, vui lòng gọi hotline ${SAMPLE_HOTLINE}.`
+        ? `Chưa gửi được yêu cầu, vui lòng thử lại hoặc gọi hotline ${SAMPLE_HOTLINE}.`
         : Object.entries(fieldErrors ?? {}).find(([k]) => k !== 'phone')?.[1]
       : undefined
+
+  // PD-09 AC5: từ trang chi tiết về (/?product=slug#bao-gia hoặc /#bao-gia?product=slug) → điền sẵn loại + chất liệu.
+  useEffect(() => {
+    const fromHash = window.location.hash.split('?')[1] ?? ''
+    const slug = new URLSearchParams(window.location.search).get('product') ?? new URLSearchParams(fromHash).get('product')
+    const p = slug ? getProduct(slug) : undefined
+    if (!p) return
+    setType(p.packaging_type)
+    setMaterial(p.materials[0])
+  }, [])
 
   useEffect(() => {
     if (phoneError) phoneRef.current?.focus()
@@ -96,7 +110,16 @@ export function QuoteForm() {
             </p>
           </motion.div>
         ) : (
-          <motion.form key="form" action={formAction} exit={{ opacity: 0, y: -8 }} noValidate aria-busy={pending}>
+          <motion.form
+            key="form"
+            action={formAction}
+            onSubmit={(e) => {
+              if (!normalizeVnPhone(phone)) {
+                e.preventDefault()
+                setClientPhoneError('Số điện thoại không hợp lệ')
+                phoneRef.current?.focus()
+              } else setClientPhoneError(null)
+            }} exit={{ opacity: 0, y: -8 }} noValidate aria-busy={pending}>
             <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
               <label htmlFor="website">Website</label>
               <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
@@ -130,7 +153,10 @@ export function QuoteForm() {
                   required
                   ref={phoneRef}
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => {
+                    setPhone(e.target.value)
+                    setClientPhoneError(null)
+                  }}
                   maxLength={20}
                   placeholder="0901 234 567"
                   aria-invalid={phoneError || undefined}

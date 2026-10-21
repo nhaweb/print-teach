@@ -1,12 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Menu, Phone, X } from 'lucide-react'
 import { Logo } from './logo'
 
 const NAV_ITEMS = [
   { label: 'Dịch vụ', href: '#dich-vu' },
+  { label: 'Sản phẩm', href: '/san-pham' },
   { label: 'Năng lực sản xuất', href: '#nang-luc' },
   { label: 'Sản phẩm mẫu', href: '#san-pham-mau' },
   { label: 'Bảng giá', href: '#bao-gia' },
@@ -14,6 +17,11 @@ const NAV_ITEMS = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+  const isHome = pathname === '/'
+  // PD-04 AC3: ở trang khác, anchor trỏ về trang chủ (/#bao-gia…).
+  const href = (h: string) => (h.startsWith('#') && !isHome ? `/${h}` : h)
+  const isActive = (h: string) => h.startsWith('/') && (pathname === h || pathname.startsWith(`${h}/`))
 
   useEffect(() => {
     if (!open) return
@@ -27,24 +35,25 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/75">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-4 md:px-6 lg:h-[72px]">
-        <a
-          href="#"
+        <Link
+          href={isHome ? '#' : '/'}
           className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="PML PrintTech — Trang chủ"
         >
           <Logo />
-        </a>
+        </Link>
 
         <nav aria-label="Điều hướng chính" className="hidden lg:block">
           <ul className="flex items-center gap-1">
             {NAV_ITEMS.map((item) => (
               <li key={item.href}>
-                <a
-                  href={item.href}
-                  className="rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                <Link
+                  href={href(item.href)}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                  className="rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring aria-[current=page]:bg-muted aria-[current=page]:font-semibold aria-[current=page]:text-foreground"
                 >
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -66,7 +75,7 @@ export function SiteHeader() {
             </span>
           </a>
           <a
-            href="#bao-gia"
+            href={href('#bao-gia')}
             className="inline-flex h-10 items-center gap-2 rounded-md bg-cta px-4 text-sm font-semibold text-cta-foreground shadow-sm transition-all hover:bg-cta-hover active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2"
           >
             Yêu cầu Báo giá Nhanh
@@ -100,13 +109,14 @@ export function SiteHeader() {
             <ul className="flex flex-col gap-1 px-4 py-4">
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
-                  <a
-                    href={item.href}
+                  <Link
+                    href={href(item.href)}
                     onClick={() => setOpen(false)}
-                    className="block rounded-md px-3 py-3 text-base font-medium text-foreground hover:bg-muted"
+                    aria-current={isActive(item.href) ? 'page' : undefined}
+                    className="block rounded-md px-3 py-3 text-base font-medium text-foreground hover:bg-muted aria-[current=page]:bg-muted aria-[current=page]:font-semibold"
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
               <li className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -118,7 +128,7 @@ export function SiteHeader() {
                   0901 234 567
                 </a>
                 <a
-                  href="#bao-gia"
+                  href={href('#bao-gia')}
                   onClick={() => setOpen(false)}
                   className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-cta font-semibold text-cta-foreground hover:bg-cta-hover"
                 >

@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
-import { PRODUCTS } from '@/lib/products'
+import { CATEGORIES } from '@/content/products'
 import { SectionHeading } from './section-heading'
 
 
@@ -28,7 +28,7 @@ export function Services() {
         </div>
 
         <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {PRODUCTS.map(({ slug, icon: Icon, title, description, tags }, i) => (
+          {CATEGORIES.map(({ value, icon: Icon, title, description, tags }, i) => (
             <motion.li
               key={title}
               initial={{ opacity: 0, y: 16 }}
@@ -53,7 +53,7 @@ export function Services() {
                   ))}
                 </ul>
                 <Link
-                  href={`/san-pham/${slug}`}
+                  href={`/san-pham?loai=${value}`}
                   className="mt-6 inline-flex items-center gap-1.5 border-t border-border pt-4 text-sm font-semibold text-foreground after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none group-hover:text-cta-hover"
                 >
                   Xem chi tiết
@@ -67,6 +67,15 @@ export function Services() {
             </motion.li>
           ))}
         </ul>
+        <div className="mt-8 flex justify-center">
+          <Link
+            href="/san-pham"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-navy px-5 text-sm font-semibold text-foreground transition-colors hover:bg-navy hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            Xem tất cả sản phẩm
+            <ArrowUpRight className="size-4" aria-hidden="true" />
+          </Link>
+        </div>
       </div>
     </section>
   )

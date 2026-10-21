@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check } from 'lucide-react'
 import { SectionHeading } from './section-heading'
@@ -166,6 +167,14 @@ export function Finishes() {
             </motion.div>
           </AnimatePresence>
         </div>
+        <p className="mt-10 text-center">
+          <Link
+            href="/san-pham"
+            className="text-sm font-semibold text-foreground underline underline-offset-4 hover:text-cta-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Xem tất cả sản phẩm
+          </Link>
+        </p>
       </div>
     </section>
   )
