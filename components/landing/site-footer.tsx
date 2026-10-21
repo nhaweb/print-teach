@@ -1,5 +1,6 @@
 import { Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
 import { Logo } from './logo'
+import { googleMapsUrl } from '@/lib/maps'
 
 const LINK_GROUPS = [
   {
@@ -62,7 +63,7 @@ export function SiteFooter() {
                 <ul className="mt-4 space-y-2.5">
                   {group.links.map((link) => (
                     <li key={link}>
-                      <a href="#dich-vu" className="text-sm text-slate-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                      <a href="/#dich-vu" className="text-sm text-slate-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                         {link}
                       </a>
                     </li>
@@ -80,6 +81,15 @@ export function SiteFooter() {
               <p className="text-sm leading-relaxed">
                 <span className="block font-semibold text-white">{loc.label}</span>
                 <span className="text-slate-400">{loc.address}</span>
+                <a
+                  href={googleMapsUrl(loc.address)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Xem bản đồ ${loc.label}: ${loc.address} (mở tab mới)`}
+                  className="mt-1 block w-fit text-xs font-semibold text-cta underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  Xem bản đồ
+                </a>
               </p>
             </div>
           ))}

@@ -1,35 +1,11 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowUpRight, Box, Gift, Layers, Tags } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowUpRight } from 'lucide-react'
+import { PRODUCTS } from '@/lib/products'
 import { SectionHeading } from './section-heading'
 
-const SERVICES = [
-  {
-    icon: Box,
-    title: 'In Bao bì Hộp giấy / Carton cao cấp',
-    description: 'Hộp cứng, hộp âm dương, hộp carton sóng E/B cho mỹ phẩm, thực phẩm, điện tử.',
-    tags: ['Ivory', 'Duplex', 'Carton sóng'],
-  },
-  {
-    icon: Gift,
-    title: 'In Túi giấy Thương hiệu & Gift box',
-    description: 'Túi giấy quai dây, túi kraft, hộp quà tặng cao cấp cho chuỗi bán lẻ & sự kiện.',
-    tags: ['Kraft', 'Couche', 'Mỹ thuật'],
-  },
-  {
-    icon: Tags,
-    title: 'In Tem nhãn / Decal cuộn tự động',
-    description: 'Decal giấy, decal nhựa PP/PE, tem bảo hành, nhãn dán máy tự động tốc độ cao.',
-    tags: ['Flexo', 'Digital', 'Bế cuộn'],
-  },
-  {
-    icon: Layers,
-    title: 'Bao bì Màng phức hợp & Nhựa định hình',
-    description: 'Túi zipper, túi đáy đứng, khay nhựa định hình PET/PVC đạt chuẩn an toàn thực phẩm.',
-    tags: ['PET/PE', 'OPP/CPP', 'Màng nhôm'],
-  },
-]
 
 export function Services() {
   return (
@@ -52,7 +28,7 @@ export function Services() {
         </div>
 
         <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {SERVICES.map(({ icon: Icon, title, description, tags }, i) => (
+          {PRODUCTS.map(({ slug, icon: Icon, title, description, tags }, i) => (
             <motion.li
               key={title}
               initial={{ opacity: 0, y: 16 }}
@@ -76,8 +52,8 @@ export function Services() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href="#bao-gia"
+                <Link
+                  href={`/san-pham/${slug}`}
                   className="mt-6 inline-flex items-center gap-1.5 border-t border-border pt-4 text-sm font-semibold text-foreground after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none group-hover:text-cta-hover"
                 >
                   Xem chi tiết
@@ -86,7 +62,7 @@ export function Services() {
                     className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                     aria-hidden="true"
                   />
-                </a>
+                </Link>
               </article>
             </motion.li>
           ))}

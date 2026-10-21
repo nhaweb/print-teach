@@ -18,7 +18,7 @@ export function SectionHeading({
   id,
 }: SectionHeadingProps) {
   return (
-    <div className={cn('max-w-2xl', align === 'center' && 'mx-auto text-center')}>
+    <div className={cn('min-w-0 max-w-full', align === 'center' && 'mx-auto text-center')}>
       <p
         className={cn(
           'inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em]',
@@ -31,7 +31,8 @@ export function SectionHeading({
       <h2
         id={id}
         className={cn(
-          'mt-3 text-balance text-3xl font-bold tracking-tight md:text-4xl',
+          // Review KH: tiêu đề 1 dòng ở md+ (clamp để vừa khung); mobile nhỏ cho phép xuống dòng.
+          'mt-3 text-balance text-[clamp(1.5rem,5.5vw,1.875rem)] font-bold tracking-tight md:whitespace-nowrap md:text-[clamp(1.5rem,3.4vw,2.25rem)]',
           tone === 'dark' ? 'text-white' : 'text-foreground',
         )}
       >
@@ -40,7 +41,7 @@ export function SectionHeading({
       {description && (
         <p
           className={cn(
-            'mt-4 text-pretty leading-relaxed md:text-lg',
+            'mt-4 max-w-2xl text-pretty leading-relaxed md:text-lg',
             tone === 'dark' ? 'text-slate-300' : 'text-muted-foreground',
           )}
         >
