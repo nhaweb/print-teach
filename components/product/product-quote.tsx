@@ -11,7 +11,7 @@ import { defaultQuantity, finishById, getProduct, materialLabel, type Product } 
 import { cn } from '@/lib/utils'
 
 type Config = { size: string; customSize: string; material: string; qty: string; finishes: string[] }
-type Ctx = { product: Product; config: Config; set: (patch: Partial<Config>) => void; toggleFinish: (id: string, force?: boolean) => void }
+type Ctx = { product: Product; config: Config; set: (patch: Partial<Config>) => void; toggleFinish: (id: string, force?: boolean) => void; reset: () => void }
 const QuoteCtx = createContext<Ctx | null>(null)
 const useQuote = () => {
   const c = useContext(QuoteCtx)
@@ -79,7 +79,7 @@ export function ProductQuoteProvider({ slug, children }: { slug: string; childre
       return { ...c, finishes: on ? [...c.finishes, id] : c.finishes.filter((f) => f !== id) }
     })
 
-  return <QuoteCtx.Provider value={{ product, config, set, toggleFinish }}>{children}</QuoteCtx.Provider>
+  return <QuoteCtx.Provider value={{ product, config, set, toggleFinish, reset: () => setConfig(defaults(product)) }}>{children}</QuoteCtx.Provider>
 }
 
 const labelClass = 'mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-600'
@@ -214,7 +214,22 @@ export function FinishPickButton({ id, children }: { id: string; children: React
 }
 
 /** PD-09: form rút gọn, gọi cùng server action với form trang chủ + product_slug/options/note. */
+/** NODB-G1: panel thành công inline + "Gửi yêu cầu khác" (remount form, cấu hình về mặc định). */
 export function ProductQuoteForm() {
+  const [round, setRound] = useState(0)
+  const { reset } = useQuote()
+  return (
+    <ProductQuoteFormInner
+      key={round}
+      onReset={() => {
+        reset()
+        setRound((r) => r + 1)
+      }}
+    />
+  )
+}
+
+function ProductQuoteFormInner({ onReset }: { onReset: () => void }) {
   const { product, config } = useQuote()
   const [state, formAction, pending] = useActionState<QuoteState, FormData>(submitQuoteRequest, null)
   const [phone, setPhone] = useState('')
@@ -227,13 +242,13 @@ export function ProductQuoteForm() {
   const qtyLabel = QUANTITY_TIERS.find((t) => t.value === config.qty)?.label
   const options = JSON.stringify({
     size: config.size,
-    custom_size: config.size === 'custom' ? config.customSize : null,
+    customSize: config.size === 'custom' ? config.customSize : null,
     finishes: config.finishes,
   })
   const otherErr = state && !state.ok
     ? state.error === 'SERVER_ERROR'
       ? `Chưa gửi được yêu cầu, vui lòng thử lại hoặc gọi hotline ${HOTLINE_DISPLAY}.`
-      : errs.options ?? errs.product_slug ?? errs.material ?? errs.quantity ?? errs.packagingType
+      : errs.options ?? errs.productSlug ?? errs.material ?? errs.quantity ?? errs.packagingType
     : clientErr.options
 
   if (state?.ok)
@@ -241,8 +256,17 @@ export function ProductQuoteForm() {
       <div id="bao-gia-san-pham" role="status" className="scroll-mt-24 rounded-xl border border-emerald-200 bg-emerald-50 p-6 text-center">
         <CheckCircle2 className="mx-auto size-10 text-emerald-600" aria-hidden="true" />
         <h2 className="mt-3 text-xl font-bold text-foreground">Đã nhận yêu cầu báo giá</h2>
-        <p className="mt-1 text-sm text-slate-700">PML sẽ liên hệ lại sớm nhất.</p>
+        <p className="mt-1 text-sm text-slate-700">Đã ghi nhận yêu cầu (bản demo). PML sẽ liên hệ lại sớm nhất.</p>
         <p className="mt-3 inline-block rounded-md bg-white px-3 py-1.5 font-mono text-sm">Mã yêu cầu: {state.ref}</p>
+        <div>
+          <button
+            type="button"
+            onClick={onReset}
+            className="mt-4 inline-flex min-h-11 items-center rounded-md border border-navy bg-white px-5 text-sm font-semibold text-foreground hover:bg-navy hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Gửi yêu cầu khác
+          </button>
+        </div>
       </div>
     )
 
@@ -266,10 +290,10 @@ export function ProductQuoteForm() {
       className="scroll-mt-24 rounded-xl border border-border bg-white p-5 md:p-6"
     >
       <h2 className="text-xl font-bold text-foreground">Nhận báo giá chi tiết</h2>
-      <input type="hidden" name="type" value={product.packaging_type} />
+      <input type="hidden" name="packagingType" value={product.packaging_type} />
       <input type="hidden" name="quantity" value={config.qty} />
       <input type="hidden" name="material" value={config.material} />
-      <input type="hidden" name="product_slug" value={product.slug} />
+      <input type="hidden" name="productSlug" value={product.slug} />
       <input type="hidden" name="options" value={options} />
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
         <label htmlFor="pq-website">Website</label>

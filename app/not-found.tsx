@@ -9,7 +9,7 @@ export default function NotFound() {
       <SiteHeader />
       <main className="py-20 md:py-28">
         <div className="mx-auto max-w-xl px-4 text-center">
-          <p className="font-mono text-sm font-semibold text-cta-hover">404</p>
+          <p className="font-mono text-sm font-semibold text-cta-text">404</p>
           <h1 className="mt-3 text-3xl font-bold text-foreground">Không tìm thấy trang</h1>
           <p className="mt-3 text-slate-600">Sản phẩm hoặc trang bạn tìm không tồn tại hoặc đã được đổi địa chỉ.</p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">

@@ -74,7 +74,7 @@ export function Factory() {
         <div className="mt-12 grid gap-4 lg:grid-cols-3 lg:grid-rows-2">
           <figure className="group relative overflow-hidden rounded-xl lg:col-span-2 lg:row-span-2">
             <Image
-              src="/images/factory-offset.png"
+              src="/images/factory-offset.webp"
               alt="Máy in offset 6 màu đang vận hành tại xưởng PML"
               width={1200}
               height={800}
@@ -88,7 +88,7 @@ export function Factory() {
           </figure>
           <figure className="group relative overflow-hidden rounded-xl">
             <Image
-              src="/images/factory-diecut.png"
+              src="/images/factory-diecut.webp"
               alt="Máy bế tự động xử lý tờ in carton"
               width={800}
               height={600}

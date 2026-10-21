@@ -54,13 +54,13 @@ export const PRINT_METHOD_LABELS: Record<PrintMethod, string> = {
 
 /** Danh mục gia công dùng chung (§5.1). Ảnh lấy lại từ section Gia công ở trang chủ. */
 export const FINISHES: readonly { id: FinishId; label: string; description: string; icon: string }[] = [
-  { id: 'can-mang-bong', label: 'Cán màng bóng', description: 'Bề mặt bóng, chống ẩm và trầy xước, màu in tươi hơn.', icon: '/images/finish-lamination.png' },
-  { id: 'can-mang-mo', label: 'Cán màng mờ', description: 'Bề mặt mờ sang trọng, hạn chế bám vân tay, hợp kết hợp UV/ép nhũ.', icon: '/images/finish-lamination.png' },
-  { id: 'ep-nhu', label: 'Ép nhũ', description: 'Ép nhũ vàng, bạc, hologram bằng khuôn đồng nhiệt làm nổi bật logo.', icon: '/images/finish-foil.png' },
-  { id: 'uv-dinh-hinh', label: 'UV định hình', description: 'Phủ UV cục bộ tạo điểm bóng nổi trên nền mờ.', icon: '/images/finish-uv.png' },
-  { id: 'dap-noi', label: 'Dập nổi', description: 'Dập nổi/chìm bằng khuôn nam – nữ tạo chiều sâu xúc giác.', icon: '/images/finish-emboss.png' },
-  { id: 'be-cua-so', label: 'Bế cửa sổ', description: 'Bế ô cửa sổ, dán màng trong để khách nhìn thấy sản phẩm bên trong.', icon: '/images/factory-diecut.png' },
-  { id: 'phu-uv', label: 'Phủ UV toàn phần', description: 'Phủ UV toàn bề mặt giúp tăng độ bóng và độ bền màu.', icon: '/images/finish-uv.png' },
+  { id: 'can-mang-bong', label: 'Cán màng bóng', description: 'Bề mặt bóng, chống ẩm và trầy xước, màu in tươi hơn.', icon: '/images/finish-lamination.webp' },
+  { id: 'can-mang-mo', label: 'Cán màng mờ', description: 'Bề mặt mờ sang trọng, hạn chế bám vân tay, hợp kết hợp UV/ép nhũ.', icon: '/images/finish-lamination.webp' },
+  { id: 'ep-nhu', label: 'Ép nhũ', description: 'Ép nhũ vàng, bạc, hologram bằng khuôn đồng nhiệt làm nổi bật logo.', icon: '/images/finish-foil.webp' },
+  { id: 'uv-dinh-hinh', label: 'UV định hình', description: 'Phủ UV cục bộ tạo điểm bóng nổi trên nền mờ.', icon: '/images/finish-uv.webp' },
+  { id: 'dap-noi', label: 'Dập nổi', description: 'Dập nổi/chìm bằng khuôn nam – nữ tạo chiều sâu xúc giác.', icon: '/images/finish-emboss.webp' },
+  { id: 'be-cua-so', label: 'Bế cửa sổ', description: 'Bế ô cửa sổ, dán màng trong để khách nhìn thấy sản phẩm bên trong.', icon: '/images/factory-diecut.webp' },
+  { id: 'phu-uv', label: 'Phủ UV toàn phần', description: 'Phủ UV toàn bề mặt giúp tăng độ bóng và độ bền màu.', icon: '/images/finish-uv.webp' },
 ]
 
 /** 4 nhóm sản phẩm (card ở trang chủ, PD-01 AC4 / PD-04). */
@@ -83,18 +83,18 @@ export const finishById = (id: string) => FINISHES.find((f) => f.id === id)
 
 const img = (src: string, alt: string): ProductImage => ({ src, alt, width: 1408, height: 768 })
 const IMG = {
-  hero: '/images/hero-packaging.png',
-  offset: '/images/factory-offset.png',
-  diecut: '/images/factory-diecut.png',
-  foil: '/images/finish-foil.png',
-  lam: '/images/finish-lamination.png',
-  uv: '/images/finish-uv.png',
-  emboss: '/images/finish-emboss.png',
+  hero: '/images/hero-packaging.webp',
+  offset: '/images/factory-offset.webp',
+  diecut: '/images/factory-diecut.webp',
+  foil: '/images/finish-foil.webp',
+  lam: '/images/finish-lamination.webp',
+  uv: '/images/finish-uv.webp',
+  emboss: '/images/finish-emboss.webp',
 }
 const dl = (group: PackagingType, specKb: number, dieKb: number) =>
   [
-    { type: 'spec' as const, file: `/downloads/pml-${group}-spec.pdf`, size_kb: specKb },
-    { type: 'dieline' as const, file: `/downloads/pml-${group}-dieline.pdf`, size_kb: dieKb },
+    { type: 'spec' as const, file: `/downloads/spec-${group}.pdf`, size_kb: specKb },
+    { type: 'dieline' as const, file: `/downloads/dieline-${group}.pdf`, size_kb: dieKb },
   ]
 
 const COMMON_FAQS = {

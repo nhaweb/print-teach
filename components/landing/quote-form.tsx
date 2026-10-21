@@ -15,12 +15,14 @@ const labelClass = 'mb-1.5 block text-xs font-semibold uppercase tracking-wide t
 
 function SelectField({
   id,
+  name,
   label,
   value,
   onChange,
   options,
 }: {
   id: string
+  name?: string
   label: string
   value: string
   onChange: (v: string) => void
@@ -32,7 +34,7 @@ function SelectField({
         {label}
       </label>
       <div className="relative">
-        <select id={id} name={id} value={value} onChange={(e) => onChange(e.target.value)} className={fieldClass}>
+        <select id={id} name={name ?? id} value={value} onChange={(e) => onChange(e.target.value)} className={fieldClass}>
           {options.map((o) => (
             <option key={o.value} value={o.value}>
               {o.label}
@@ -48,7 +50,13 @@ function SelectField({
   )
 }
 
+/** NODB-G1: "Gửi yêu cầu khác" remount form → về mặc định. */
 export function QuoteForm() {
+  const [round, setRound] = useState(0)
+  return <QuoteFormInner key={round} onReset={() => setRound((r) => r + 1)} />
+}
+
+function QuoteFormInner({ onReset }: { onReset: () => void }) {
   const [type, setType] = useState<string>(PACKAGING_TYPES[0].value)
   const [quantity, setQuantity] = useState<string>(QUANTITY_TIERS[1].value)
   const [material, setMaterial] = useState<string>(MATERIALS[0].value)
@@ -108,6 +116,14 @@ export function QuoteForm() {
             <p className="mt-4 rounded-md bg-muted px-3 py-1.5 font-mono text-sm text-foreground">
               Mã yêu cầu: {state.ref}
             </p>
+            <p className="mt-3 text-xs text-muted-foreground">Đã ghi nhận yêu cầu (bản demo).</p>
+            <button
+              type="button"
+              onClick={onReset}
+              className="mt-4 inline-flex min-h-11 items-center rounded-md border border-navy px-5 text-sm font-semibold text-foreground hover:bg-navy hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Gửi yêu cầu khác
+            </button>
           </motion.div>
         ) : (
           <motion.form
@@ -136,7 +152,7 @@ export function QuoteForm() {
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <SelectField id="type" label="Loại bao bì" value={type} onChange={setType} options={PACKAGING_TYPES} />
+                <SelectField id="type" name="packagingType" label="Loại bao bì" value={type} onChange={setType} options={PACKAGING_TYPES} />
               </div>
               <SelectField id="quantity" label="Số lượng" value={quantity} onChange={setQuantity} options={QUANTITY_TIERS} />
               <SelectField id="material" label="Chất liệu giấy/nhựa" value={material} onChange={setMaterial} options={MATERIALS} />

@@ -38,9 +38,9 @@ export function SiteHeader() {
         <Link
           href={isHome ? '#' : '/'}
           className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label="PML PrintTech — Trang chủ"
         >
           <Logo />
+          <span className="sr-only"> — Trang chủ</span>
         </Link>
 
         <nav aria-label="Điều hướng chính" className="hidden lg:block">

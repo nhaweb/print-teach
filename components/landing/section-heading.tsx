@@ -22,7 +22,7 @@ export function SectionHeading({
       <p
         className={cn(
           'inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em]',
-          tone === 'dark' ? 'text-cta' : 'text-cta-hover',
+          tone === 'dark' ? 'text-cta' : 'text-cta-text',
         )}
       >
         <span aria-hidden="true" className="h-px w-6 bg-current" />

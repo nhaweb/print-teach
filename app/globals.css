@@ -8,6 +8,7 @@
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --color-cta: var(--cta);
   --color-cta-hover: var(--cta-hover);
+  --color-cta-text: var(--cta-text);
   --color-cta-foreground: var(--cta-foreground);
   --color-navy: var(--navy);
   --color-navy-soft: var(--navy-soft);
@@ -61,6 +62,8 @@
   --navy-soft: #1e293b;
   --cta: #f59e0b;
   --cta-hover: #d97706;
+  /* PD-B03: chữ nhấn màu hổ phách trên nền sáng (amber-700, ≥4.8:1 trên #fafafa/#fff). */
+  --cta-text: #b45309;
   --cta-foreground: #0f172a;
 }
 

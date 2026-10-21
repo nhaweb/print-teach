@@ -26,7 +26,7 @@ export function ProductCard({ product, headingLevel = 'h2' }: { product: Product
         <H className="text-lg font-bold leading-snug text-foreground">
           <Link
             href={`/san-pham/${product.slug}`}
-            className="after:absolute after:inset-0 focus-visible:outline-none group-hover:text-cta-hover"
+            className="after:absolute after:inset-0 focus-visible:outline-none group-hover:text-cta-text"
           >
             {product.name}
           </Link>

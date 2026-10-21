@@ -13,7 +13,7 @@ const FINISHES = [
     id: 'ep-kim',
     label: 'Ép kim',
     en: 'Foil stamping',
-    image: '/images/finish-foil.png',
+    image: '/images/finish-foil.webp',
     alt: 'Ép kim vàng trên hộp giấy màu xanh navy',
     description:
       'Ép nhũ vàng, bạc, hologram bằng khuôn đồng nhiệt — tạo điểm nhấn sang trọng cho logo và họa tiết.',
@@ -23,7 +23,7 @@ const FINISHES = [
     id: 'can-mang',
     label: 'Cán màng',
     en: 'Lamination',
-    image: '/images/finish-lamination.png',
+    image: '/images/finish-lamination.webp',
     alt: 'Mẫu giấy cán màng mờ và cán màng bóng',
     description:
       'Cán màng bóng, mờ hoặc soft-touch nhung giúp chống ẩm, chống trầy và tăng cảm giác cao cấp khi cầm.',
@@ -33,7 +33,7 @@ const FINISHES = [
     id: 'phu-uv',
     label: 'Phủ UV định hình',
     en: 'Spot UV',
-    image: '/images/finish-uv.png',
+    image: '/images/finish-uv.webp',
     alt: 'Phủ UV định hình bóng trên nền hộp đen mờ',
     description:
       'Phủ UV cục bộ tạo hiệu ứng bóng nổi trên nền mờ, làm nổi bật tên thương hiệu và chi tiết hình ảnh.',
@@ -43,7 +43,7 @@ const FINISHES = [
     id: 'thuc-noi',
     label: 'Thúc nổi',
     en: 'Embossing',
-    image: '/images/finish-emboss.png',
+    image: '/images/finish-emboss.webp',
     alt: 'Logo thúc nổi trên giấy mỹ thuật trắng',
     description:
       'Dập nổi hoặc dập chìm bằng khuôn nam – nữ tạo chiều sâu xúc giác, tinh tế mà không cần mực in.',
@@ -142,7 +142,7 @@ export function Finishes() {
                 />
               </div>
               <div className="flex flex-col justify-center p-8 md:p-12">
-                <p className="font-mono text-xs font-semibold uppercase tracking-widest text-cta-hover">
+                <p className="font-mono text-xs font-semibold uppercase tracking-widest text-cta-text">
                   {current.en}
                 </p>
                 <h3 className="mt-2 text-2xl font-bold text-foreground md:text-3xl">{current.label}</h3>
@@ -170,7 +170,7 @@ export function Finishes() {
         <p className="mt-10 text-center">
           <Link
             href="/san-pham"
-            className="text-sm font-semibold text-foreground underline underline-offset-4 hover:text-cta-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="text-sm font-semibold text-foreground underline underline-offset-4 hover:text-cta-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Xem tất cả sản phẩm
           </Link>

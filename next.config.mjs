@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    unoptimized: true,
+    // PD-B02: bật tối ưu ảnh của Next (Vercel hỗ trợ sẵn, mặc định trả WebP theo kích thước thiết bị).
+    qualities: [70, 75],
   },
   // Slug cũ (fdfacfe, 4 nhóm) → danh mục đã lọc theo nhóm.
   async redirects() {
@@ -10,7 +11,7 @@ const nextConfig = {
       ['tui-giay-gift-box', 'tui-giay'],
       ['tem-nhan-decal-cuon', 'tem-nhan'],
       ['mang-phuc-hop-nhua-dinh-hinh', 'mang-phuc-hop'],
-    ].map(([from, loai]) => ({ source: `/san-pham/${from}`, destination: `/san-pham?loai=${loai}`, permanent: false }))
+    ].map(([from, loai]) => ({ source: `/san-pham/${from}`, destination: `/san-pham?loai=${loai}`, permanent: true }))
   },
   async headers() {
     return [

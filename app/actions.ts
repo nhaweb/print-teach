@@ -6,11 +6,11 @@ import { normalizeVnPhone } from '@/lib/phone'
 import { getProduct } from '@/content/products'
 
 export type QuoteFieldErrors = Partial<
-  Record<'packagingType' | 'quantity' | 'material' | 'phone' | 'product_slug' | 'options' | 'note', string>
+  Record<'packagingType' | 'quantity' | 'material' | 'phone' | 'productSlug' | 'options' | 'note', string>
 >
 
 /** Tuỳ chọn sản phẩm (spec US-product-detail §6). */
-export type QuoteOptions = { size: string; custom_size: string | null; finishes: string[] }
+export type QuoteOptions = { size: string; customSize: string | null; finishes: string[] }
 
 const NOTE_MAX = 500
 const CUSTOM_SIZE_MAX = 60
@@ -33,7 +33,8 @@ function newRef() {
 }
 
 export async function submitQuoteRequest(_prev: QuoteState, formData: FormData): Promise<QuoteResult> {
-  const type = formData.get('type')
+  // PD-G03: tên trường camelCase.
+  const type = formData.get('packagingType')
   const quantity = formData.get('quantity')
   const material = formData.get('material')
   const fieldErrors: QuoteFieldErrors = {}
@@ -44,23 +45,30 @@ export async function submitQuoteRequest(_prev: QuoteState, formData: FormData):
   const phone = normalizeVnPhone(formData.get('phone'))
   if (!phone) fieldErrors.phone = 'Số điện thoại không hợp lệ'
 
-  // PD-10: trường mới tuỳ chọn. Form trang chủ không gửi product_slug → hành vi như cũ.
-  const rawSlug = formData.get('product_slug')
+  // PD-10: trường mới tuỳ chọn. Form trang chủ không gửi productSlug → hành vi như cũ.
+  const rawSlug = formData.get('productSlug')
   const hasProduct = typeof rawSlug === 'string' && rawSlug.trim() !== ''
-  let productExtras: { product_slug: string; options: QuoteOptions; note: string | null; source: 'product' } | null = null
+  let productExtras: { product_slug: string; options: QuoteOptions | null; note: string | null; source: 'product' } | null = null
   if (hasProduct) {
     const product = getProduct(rawSlug.trim())
     const rawNote = formData.get('note')
     const note = typeof rawNote === 'string' ? rawNote.trim() : ''
     if (note.length > NOTE_MAX) fieldErrors.note = `Ghi chú tối đa ${NOTE_MAX} ký tự`
     if (!product) {
-      fieldErrors.product_slug = 'Sản phẩm không tồn tại'
+      fieldErrors.productSlug = 'Sản phẩm không tồn tại'
     } else {
-      if (type !== product.packaging_type) fieldErrors.product_slug = 'Loại bao bì không khớp với sản phẩm'
-      if (typeof material === 'string' && !(product.materials as readonly string[]).includes(material))
+      if (type !== product.packaging_type) fieldErrors.productSlug = 'Loại bao bì không khớp với sản phẩm'
+      // PD-G05
+      if (typeof material === 'string' && MATERIALS.some((m) => m.value === material) && !(product.materials as readonly string[]).includes(material))
         fieldErrors.material = 'Chất liệu không áp dụng cho sản phẩm này'
-      const options = parseOptions(formData.get('options'), product)
-      if (!options) fieldErrors.options = 'Tuỳ chọn không hợp lệ'
+      // PD-G07: dưới MOQ của sản phẩm.
+      if (typeof quantity === 'string' && QUANTITY_TIERS.some((q) => q.value === quantity) && Number(quantity) < product.moq)
+        fieldErrors.quantity = `Số lượng tối thiểu là ${new Intl.NumberFormat('vi-VN').format(product.moq)}`
+      // PD-G04/G06: options là chuỗi JSON, không bắt buộc; có gửi thì phải hợp lệ.
+      const rawOptions = formData.get('options')
+      const hasOptions = typeof rawOptions === 'string' && rawOptions.trim() !== ''
+      const options = hasOptions ? parseOptions(rawOptions, product) : null
+      if (hasOptions && !options) fieldErrors.options = 'Tuỳ chọn không hợp lệ'
       else productExtras = { product_slug: product.slug, options, note: note || null, source: 'product' }
     }
   }
@@ -82,7 +90,7 @@ export async function submitQuoteRequest(_prev: QuoteState, formData: FormData):
   return { ok: true, ref: newRef() }
 }
 
-/** options: JSON {size, custom_size, finishes[]}; size ∈ sizes[].id | "custom"; finishes ⊂ product.finishes. */
+/** options: JSON {size, customSize, finishes[]}; size ∈ sizes[].id | "custom"; finishes ⊂ product.finishes. */
 function parseOptions(raw: FormDataEntryValue | null, product: { sizes: readonly { id: string }[]; finishes: readonly string[] }): QuoteOptions | null {
   if (typeof raw !== 'string' || raw.length > 2000) return null
   let o: unknown
@@ -92,7 +100,7 @@ function parseOptions(raw: FormDataEntryValue | null, product: { sizes: readonly
     return null
   }
   if (!o || typeof o !== 'object' || Array.isArray(o)) return null
-  const { size, custom_size, finishes } = o as Record<string, unknown>
+  const { size, customSize: custom_size, finishes } = o as Record<string, unknown>
   if (typeof size !== 'string') return null
   let custom: string | null = null
   if (size === 'custom') {
@@ -102,5 +110,5 @@ function parseOptions(raw: FormDataEntryValue | null, product: { sizes: readonly
   } else if (!product.sizes.some((s) => s.id === size)) return null
   const fin = finishes ?? []
   if (!Array.isArray(fin) || fin.some((f) => typeof f !== 'string' || !product.finishes.includes(f))) return null
-  return { size, custom_size: custom, finishes: [...new Set(fin as string[])] }
+  return { size, customSize: custom, finishes: [...new Set(fin as string[])] }
 }

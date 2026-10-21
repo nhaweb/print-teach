@@ -38,7 +38,7 @@ export function Testimonials() {
           {PARTNERS.map((p) => (
             <li
               key={p}
-              className="grid h-20 place-items-center bg-white px-4 text-center text-base font-extrabold tracking-tight text-slate-400 transition-colors hover:text-foreground"
+              className="grid h-20 place-items-center bg-white px-4 text-center text-base font-extrabold tracking-tight text-slate-600 transition-colors hover:text-foreground"
             >
               {p}
             </li>

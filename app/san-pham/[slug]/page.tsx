@@ -48,9 +48,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: { canonical: path },
     // PD-17 AC3: noindex giữ nguyên như toàn site (OPEN-7).
     robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
-    openGraph: { title, description, url: path, siteName: 'PML PrintTech', locale: 'vi_VN', images: [image] },
-    // Next Metadata không hỗ trợ og:type=product → khai báo qua `other`.
-    other: { 'og:type': 'product' },
+    openGraph: { title, description, url: path, siteName: 'PML PrintTech', locale: 'vi_VN', type: 'website', images: [image] },
+    // PD-G12: og:type=website; thông tin sản phẩm nằm trong JSON-LD Product.
     twitter: { card: 'summary_large_image', title, description, images: [image.url] },
   }
 }
@@ -131,10 +130,10 @@ export default async function ProductPage({ params }: Props) {
               </div>
               <div className="min-w-0 lg:row-span-2">
                 <div className="lg:sticky lg:top-24">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cta-hover">{typeLabel(product.packaging_type)}</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cta-text">{typeLabel(product.packaging_type)}</p>
                   <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground md:text-4xl">{product.name}</h1>
                   <p className="mt-3 leading-relaxed text-slate-600">{product.description}</p>
-                  <p className="mt-2 text-xs text-slate-500">Nội dung, ảnh và giá trên trang là dữ liệu mẫu.</p>
+                  <p className="mt-2 text-xs text-slate-600">Nội dung, ảnh và giá trên trang là dữ liệu mẫu.</p>
                   <div className="mt-5">
                     <Configurator />
                   </div>

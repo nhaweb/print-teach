@@ -54,7 +54,7 @@ export function Services() {
                 </ul>
                 <Link
                   href={`/san-pham?loai=${value}`}
-                  className="mt-6 inline-flex items-center gap-1.5 border-t border-border pt-4 text-sm font-semibold text-foreground after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none group-hover:text-cta-hover"
+                  className="mt-6 inline-flex items-center gap-1.5 border-t border-border pt-4 text-sm font-semibold text-foreground after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none group-hover:text-cta-text"
                 >
                   Xem chi tiết
                   <span className="sr-only">: {title}</span>

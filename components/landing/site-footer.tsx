@@ -96,7 +96,7 @@ export function SiteFooter() {
         </address>
       </div>
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-xs text-slate-500 md:flex-row md:items-center md:justify-between md:px-6">
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-xs text-slate-400 md:flex-row md:items-center md:justify-between md:px-6">
           <p>© {new Date().getFullYear()} PML Vietnam. Bảo lưu mọi quyền.</p>
           <p>MST: 0312345678 — Sở KH&ĐT TP. Hồ Chí Minh cấp</p>
         </div>

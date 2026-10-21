@@ -18,6 +18,8 @@ export function Gallery({ images, name }: { images: readonly ProductImage[]; nam
       <button
         ref={mainRef}
         type="button"
+        data-testid="gallery-main"
+        aria-haspopup="dialog"
         onClick={() => setOpen(true)}
         className="group relative block aspect-[16/10] w-full overflow-hidden rounded-xl border border-border bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
